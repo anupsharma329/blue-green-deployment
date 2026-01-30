@@ -41,21 +41,7 @@ resource "aws_launch_template" "blue" {
     npm install
     sed -i "s/}).listen(3000);/}).listen(3000, '0.0.0.0');/" app.js || true
     chown -R ubuntu:ubuntu /home/ubuntu/blue-green-deployment
-    sudo tee /etc/systemd/system/nodeapp.service > /dev/null << 'SVC'
-[Unit]
-Description=Node.js Blue App
-After=network-online.target
-Wants=network-online.target
-[Service]
-Type=simple
-User=ubuntu
-WorkingDirectory=/home/ubuntu/blue-green-deployment/app/blue
-ExecStart=/usr/bin/node app.js
-Restart=on-failure
-RestartSec=5
-[Install]
-WantedBy=multi-user.target
-SVC
+    printf '%s\n' '[Unit]' 'Description=Node.js Blue App' 'After=network-online.target' 'Wants=network-online.target' '' '[Service]' 'Type=simple' 'User=ubuntu' 'WorkingDirectory=/home/ubuntu/blue-green-deployment/app/blue' 'ExecStart=/usr/bin/node app.js' 'Restart=on-failure' 'RestartSec=5' '' '[Install]' 'WantedBy=multi-user.target' | sudo tee /etc/systemd/system/nodeapp.service > /dev/null
     systemctl daemon-reload
     systemctl enable --now nodeapp
     sleep 5
@@ -86,21 +72,7 @@ resource "aws_launch_template" "green" {
     npm install
     sed -i "s/}).listen(3000);/}).listen(3000, '0.0.0.0');/" app.js || true
     chown -R ubuntu:ubuntu /home/ubuntu/blue-green-deployment
-    sudo tee /etc/systemd/system/nodeapp.service > /dev/null << 'SVC'
-[Unit]
-Description=Node.js Green App
-After=network-online.target
-Wants=network-online.target
-[Service]
-Type=simple
-User=ubuntu
-WorkingDirectory=/home/ubuntu/blue-green-deployment/app/green
-ExecStart=/usr/bin/node app.js
-Restart=on-failure
-RestartSec=5
-[Install]
-WantedBy=multi-user.target
-SVC
+    printf '%s\n' '[Unit]' 'Description=Node.js Green App' 'After=network-online.target' 'Wants=network-online.target' '' '[Service]' 'Type=simple' 'User=ubuntu' 'WorkingDirectory=/home/ubuntu/blue-green-deployment/app/green' 'ExecStart=/usr/bin/node app.js' 'Restart=on-failure' 'RestartSec=5' '' '[Install]' 'WantedBy=multi-user.target' | sudo tee /etc/systemd/system/nodeapp.service > /dev/null
     systemctl daemon-reload
     systemctl enable --now nodeapp
     sleep 5
