@@ -29,42 +29,34 @@ resource "aws_launch_template" "blue" {
 
   user_data = base64encode(<<-EOF
     #!/bin/bash
-    # Log everything for troubleshooting
     exec > >(tee /var/log/user-data.log|logger -t user-data -s 2>/dev/console) 2>&1
-    set -x
-    
-    # Update Ubuntu packages
+    set -e
     apt-get update -y
     apt-get install -y curl git
-    
-    # Install Node.js 18.x
     curl -fsSL https://deb.nodesource.com/setup_18.x | bash -
     apt-get install -y nodejs
-    
-    # Verify Node.js installation
-    node --version
-    npm --version
-    
-    # Clone your app
     cd /home/ubuntu
-    git clone https://github.com/anupsharma123/blue-green-deployment.git || echo "Git clone failed"
-    cd blue-green-deployment/app/blue || { echo "Failed to cd to app directory"; exit 1; }
-    
-    # Install dependencies
-    npm install || { echo "npm install failed"; exit 1; }
-    
-    # Start app in background and redirect output to log
-    nohup npm start > /var/log/app.log 2>&1 &
-    
-    # Wait a moment and verify app is running
-    sleep 5
-    if pgrep -f "node.*app.js" > /dev/null; then
-      echo "App started successfully"
-      curl -f http://localhost:3000 || echo "App not responding on localhost:3000"
-    else
-      echo "ERROR: App failed to start"
-      exit 1
-    fi
+    git clone https://github.com/anupsharma123/blue-green-deployment.git
+    cd blue-green-deployment/app/blue
+    npm install
+    cat > /etc/systemd/system/nodeapp.service << 'SVC'
+[Unit]
+Description=Node.js Blue App
+After=network.target
+[Service]
+Type=simple
+User=ubuntu
+WorkingDirectory=/home/ubuntu/blue-green-deployment/app/blue
+ExecStart=/usr/bin/node app.js
+Restart=on-failure
+RestartSec=5
+[Install]
+WantedBy=multi-user.target
+SVC
+    systemctl daemon-reload
+    systemctl enable --now nodeapp
+    sleep 3
+    systemctl status nodeapp --no-pager || true
 EOF
   )
 }
@@ -78,42 +70,34 @@ resource "aws_launch_template" "green" {
 
   user_data = base64encode(<<-EOF
     #!/bin/bash
-    # Log everything for troubleshooting
     exec > >(tee /var/log/user-data.log|logger -t user-data -s 2>/dev/console) 2>&1
-    set -x
-    
-    # Update Ubuntu packages
+    set -e
     apt-get update -y
     apt-get install -y curl git
-    
-    # Install Node.js 18.x
     curl -fsSL https://deb.nodesource.com/setup_18.x | bash -
     apt-get install -y nodejs
-    
-    # Verify Node.js installation
-    node --version
-    npm --version
-    
-    # Clone your app
     cd /home/ubuntu
-    git clone https://github.com/anupsharma123/blue-green-deployment.git || echo "Git clone failed"
-    cd blue-green-deployment/app/green || { echo "Failed to cd to app directory"; exit 1; }
-    
-    # Install dependencies
-    npm install || { echo "npm install failed"; exit 1; }
-    
-    # Start app in background and redirect output to log
-    nohup npm start > /var/log/app.log 2>&1 &
-    
-    # Wait a moment and verify app is running
-    sleep 5
-    if pgrep -f "node.*app.js" > /dev/null; then
-      echo "App started successfully"
-      curl -f http://localhost:3000 || echo "App not responding on localhost:3000"
-    else
-      echo "ERROR: App failed to start"
-      exit 1
-    fi
+    git clone https://github.com/anupsharma123/blue-green-deployment.git
+    cd blue-green-deployment/app/green
+    npm install
+    cat > /etc/systemd/system/nodeapp.service << 'SVC'
+[Unit]
+Description=Node.js Green App
+After=network.target
+[Service]
+Type=simple
+User=ubuntu
+WorkingDirectory=/home/ubuntu/blue-green-deployment/app/green
+ExecStart=/usr/bin/node app.js
+Restart=on-failure
+RestartSec=5
+[Install]
+WantedBy=multi-user.target
+SVC
+    systemctl daemon-reload
+    systemctl enable --now nodeapp
+    sleep 3
+    systemctl status nodeapp --no-pager || true
   EOF
   )
 }

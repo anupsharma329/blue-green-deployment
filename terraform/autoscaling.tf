@@ -2,12 +2,12 @@
 resource "aws_autoscaling_group" "blue" {
   name                      = "blue-asg"
   max_size                  = 4
-  min_size                  = 1
+  min_size                  = 0
   desired_capacity          = var.active_target == "blue" ? 1 : 0
   vpc_zone_identifier       = [aws_subnet.public1.id, aws_subnet.public2.id]
   target_group_arns         = [aws_lb_target_group.blue.arn]
   health_check_type         = "ELB"
-  health_check_grace_period = 300
+  health_check_grace_period = 600
 
   launch_template {
     id      = aws_launch_template.blue.id
@@ -30,7 +30,7 @@ resource "aws_autoscaling_group" "green" {
   vpc_zone_identifier       = [aws_subnet.public1.id, aws_subnet.public2.id]
   target_group_arns         = [aws_lb_target_group.green.arn]
   health_check_type         = "ELB"
-  health_check_grace_period = 300
+  health_check_grace_period = 600
 
   launch_template {
     id      = aws_launch_template.green.id
