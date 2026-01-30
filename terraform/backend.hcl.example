@@ -1,0 +1,7 @@
+# Copy to backend.hcl and fill in your values. Use for:
+#   terraform init -backend-config=backend.hcl
+# Do not commit backend.hcl (add to .gitignore) if it contains sensitive names.
+bucket         = "YOUR-TERRAFORM-STATE-BUCKET"
+key            = "blue-green/terraform.tfstate"
+region         = "us-east-1"
+dynamodb_table = "terraform-lock"  # optional, for state locking

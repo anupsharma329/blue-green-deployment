@@ -19,6 +19,7 @@ terraform/*.tfstate
 terraform/*.tfstate.*
 terraform/*.tfstate.backup
 terraform/.terraform.tfstate.lock.info
+terraform/backend.hcl
 terraform/launch-templates-alternative.tf.example
 
 # Optional: ignore alternative example if you don't want it tracked

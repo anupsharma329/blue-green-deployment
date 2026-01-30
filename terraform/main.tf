@@ -5,6 +5,10 @@ terraform {
       version = "~> 4.0"
     }
   }
+
+  # S3 backend: required for GitHub Actions so state is shared between runs (so the blue/green button can switch).
+  # Provide bucket, key, region via -backend-config (see backend.hcl.example) or workflow secrets.
+  backend "s3" {}
 }
 
 #vpc 
