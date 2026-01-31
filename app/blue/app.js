@@ -17,37 +17,37 @@ const html = `
       display: flex;
       align-items: center;
       justify-content: center;
-      background: linear-gradient(135deg, #0d1b2a 0%, #1b3a5c 50%, #0d1b2a 100%);
-      color: #e3f2fd;
+      background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 50%, #e3f2fd 100%);
+      color: #0d47a1;
       padding: 2rem;
     }
     .card {
-      background: rgba(255, 255, 255, 0.08);
-      border: 2px solid #2196f3;
+      background: rgba(255, 255, 255, 0.9);
+      border: 2px solid #42a5f5;
       border-radius: 16px;
       padding: 2.5rem;
       max-width: 520px;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      box-shadow: 0 8px 32px rgba(33, 150, 243, 0.2);
     }
     h1 {
-      color: #64b5f6;
+      color: #1976d2;
       font-size: 1.75rem;
       margin-bottom: 0.5rem;
-      text-shadow: 0 0 12px rgba(100, 181, 246, 0.5);
+      text-shadow: 0 0 8px rgba(25, 118, 210, 0.2);
     }
     .version {
-      color: #90caf9;
+      color: #1e88e5;
       font-size: 0.95rem;
       margin-bottom: 1.25rem;
     }
     .description {
-      color: #bbdefb;
+      color: #1565c0;
       line-height: 1.6;
       font-size: 0.95rem;
     }
     .badge {
       display: inline-block;
-      background: #1565c0;
+      background: #2196f3;
       color: #fff;
       padding: 0.25rem 0.6rem;
       border-radius: 6px;
